@@ -1,3 +1,5 @@
+##æ§åˆ¶å°è´ªåƒè›‡å°æ¸¸æˆå¤©èŠ±æ¿æºä»£ç 
+
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -22,9 +24,9 @@ const string HIGHSCORE_FILE = "highscore.txt";
 
 enum Direction { UP, DOWN, LEFT, RIGHT };
 enum Weather { SUNNY, RAINY, SNOWY, THUNDERSTORM, WINDY, SMOG };
-enum ItemType { NORMAL, BOOST, SLOWDOWN, SHIELD, DOUBLE_POINTS, REVERSE, MAGNET }; //Ê³ÎïÖÖÀà
-enum GameMode { CLASSIC, SURVIVAL }; // Ìí¼ÓÉú´æÄ£Ê½
-enum RandomEvent { NONE, FOOD_RESET, SUPER_FOOD, HELL_MODE, SCORE_RUSH };//Ëæ»úÊÂ¼ş
+enum ItemType { NORMAL, BOOST, SLOWDOWN, SHIELD, DOUBLE_POINTS, REVERSE, MAGNET }; //é£Ÿç‰©ç§ç±»
+enum GameMode { CLASSIC, SURVIVAL }; // æ·»åŠ ç”Ÿå­˜æ¨¡å¼
+enum RandomEvent { NONE, FOOD_RESET, SUPER_FOOD, HELL_MODE, SCORE_RUSH };//éšæœºäº‹ä»¶
 
 struct Point {
     int x, y;
@@ -38,12 +40,12 @@ public:
         level(1), delay(initialDelay), numObstacles(numObstacles), isMultiplayer(isMultiplayer), weatherDuration(20), baseDelay(initialDelay),
         combo1(0), combo2(0),
         lastEatTime1(steady_clock::now()), lastEatTime2(steady_clock::now()),
-        magnetActive1(false), magnetActive2(false), magnetDuration1(0), magnetDuration2(0){ // ³õÊ¼»¯×´Ì¬
+        magnetActive1(false), magnetActive2(false), magnetDuration1(0), magnetDuration2(0){ // åˆå§‹åŒ–çŠ¶æ€
 
-        // ³õÊ¼»¯Íæ¼Ò1
+        // åˆå§‹åŒ–ç©å®¶1
         snake.push_back({ WIDTH / 2, HEIGHT / 2 });
 
-    // ³õÊ¼»¯Íæ¼Ò2
+    // åˆå§‹åŒ–ç©å®¶2
     if (isMultiplayer) {
         player2.push_back({ WIDTH / 2 - 10, HEIGHT / 2 });
     }
@@ -52,9 +54,9 @@ public:
     generateObstacles();
     lastWeatherChange = steady_clock::now();
     startTime = steady_clock::now();
-    loadHighScore();//¼ÓÔØÀúÊ·×î¸ß·Ö
-    loadHighSurvivalTime(); // ¼ÓÔØÀúÊ·×î³¤Éú´æÊ±¼ä
-    currentSurvivalTime = 0; // ³õÊ¼»¯µ±Ç°Éú´æÊ±
+    loadHighScore();//åŠ è½½å†å²æœ€é«˜åˆ†
+    loadHighSurvivalTime(); // åŠ è½½å†å²æœ€é•¿ç”Ÿå­˜æ—¶é—´
+    currentSurvivalTime = 0; // åˆå§‹åŒ–å½“å‰ç”Ÿå­˜æ—¶
     currentWeather = SUNNY;
     player1Alive = true;
     player2Alive = isMultiplayer;
@@ -62,7 +64,7 @@ public:
     shieldDuration2 = 0;
     shieldActive1 = false;
     shieldActive2 = false;
-    // Ìí¼ÓË«±¶·ÖÊıµÄ¶ÀÁ¢Ê±¼ä±äÁ¿
+    // æ·»åŠ åŒå€åˆ†æ•°çš„ç‹¬ç«‹æ—¶é—´å˜é‡
     doublePointsActive1 = false;
     doublePointsActive2 = false;
     doublePointsDuration1 = 0;
@@ -82,7 +84,7 @@ void run() {
         }
         this_thread::sleep_for(chrono::milliseconds(delay));
     }
-    // ÓÎÏ·½áÊøÊ±ÏÔÊ¾ĞÅÏ¢
+    // æ¸¸æˆç»“æŸæ—¶æ˜¾ç¤ºä¿¡æ¯
     cout << "Game Over! Player 1 Score: " << score1 << ", Player 2 Score: " << score2
         << ", Level: " << level << ", Time: " << getElapsedTime() << " seconds" << endl;
     if (score1 > highScore) {
@@ -117,19 +119,19 @@ private:
     int delay;
     int numObstacles;
     int highScore;
-    int baseDelay; // »ù´¡ÑÓ³ÙÓÃÓÚÌìÆø¼ÆËã
+    int baseDelay; // åŸºç¡€å»¶è¿Ÿç”¨äºå¤©æ°”è®¡ç®—
     steady_clock::time_point startTime;
     Weather currentWeather;
     bool isMultiplayer;
-    bool shieldActive1 = false; // Íæ¼Ò1»¤¶Ü
-    bool shieldActive2 = false; // Íæ¼Ò2»¤¶Ü
-    int shieldDuration1 = 0; // Íæ¼Ò1»¤¶ÜÊ£ÓàÊ±¼ä
-    int shieldDuration2 = 0; // Íæ¼Ò2»¤¶ÜÊ£ÓàÊ±¼ä
-    bool doublePointsActive1 = false; // Íæ¼Ò1Ë«±¶·ÖÊı×´Ì¬
-    bool doublePointsActive2 = false; // Íæ¼Ò2Ë«±¶·ÖÊı×´Ì¬
-    int doublePointsDuration1 = 0; // Íæ¼Ò1Ë«±¶·ÖÊıÊ£ÓàÊ±¼ä
-    int doublePointsDuration2 = 0; // Íæ¼Ò2Ë«±¶·ÖÊıÊ£ÓàÊ±¼ä
-    //·´×ªµÀ¾ßÊ±¼ä±äÁ¿
+    bool shieldActive1 = false; // ç©å®¶1æŠ¤ç›¾
+    bool shieldActive2 = false; // ç©å®¶2æŠ¤ç›¾
+    int shieldDuration1 = 0; // ç©å®¶1æŠ¤ç›¾å‰©ä½™æ—¶é—´
+    int shieldDuration2 = 0; // ç©å®¶2æŠ¤ç›¾å‰©ä½™æ—¶é—´
+    bool doublePointsActive1 = false; // ç©å®¶1åŒå€åˆ†æ•°çŠ¶æ€
+    bool doublePointsActive2 = false; // ç©å®¶2åŒå€åˆ†æ•°çŠ¶æ€
+    int doublePointsDuration1 = 0; // ç©å®¶1åŒå€åˆ†æ•°å‰©ä½™æ—¶é—´
+    int doublePointsDuration2 = 0; // ç©å®¶2åŒå€åˆ†æ•°å‰©ä½™æ—¶é—´
+    //åè½¬é“å…·æ—¶é—´å˜é‡
     bool reverseActive1 = false;
     bool reverseActive2 = false;
     int reverseDuration1 = 0;
@@ -148,16 +150,16 @@ private:
     steady_clock::time_point doublePointsStart2;
     steady_clock::time_point lastWeatherChange;
     int weatherDuration;
-    vector<pair<Point, steady_clock::time_point>> tempObstacles; // ÔİÊ±ÕÏ°­Îï
-    //Ìí¼ÓÁ¬»÷ÊıµÄ¶ÀÁ¢±äÁ¿
+    vector<pair<Point, steady_clock::time_point>> tempObstacles; // æš‚æ—¶éšœç¢ç‰©
+    //æ·»åŠ è¿å‡»æ•°çš„ç‹¬ç«‹å˜é‡
     int combo1;
     int combo2;
     steady_clock::time_point lastEatTime1;
     steady_clock::time_point lastEatTime2;
-    GameMode gameMode; // Ìí¼ÓÓÎÏ·Ä£Ê½±äÁ¿
-    steady_clock::time_point lastObstacleTime; // ÉÏ´ÎÉú³ÉÕÏ°­ÎïµÄÊ±¼ä
-    double currentSurvivalTime; // µ±Ç°ÓÎÏ·µÄÉú´æÊ±¼ä
-    double highSurvivalTime; // ÀúÊ·×î³¤Éú´æÊ±¼ä
+    GameMode gameMode; // æ·»åŠ æ¸¸æˆæ¨¡å¼å˜é‡
+    steady_clock::time_point lastObstacleTime; // ä¸Šæ¬¡ç”Ÿæˆéšœç¢ç‰©çš„æ—¶é—´
+    double currentSurvivalTime; // å½“å‰æ¸¸æˆçš„ç”Ÿå­˜æ—¶é—´
+    double highSurvivalTime; // å†å²æœ€é•¿ç”Ÿå­˜æ—¶é—´
     RandomEvent randomEvent = NONE;
     steady_clock::time_point lastEventTime;
     steady_clock::time_point eventEndTime;
@@ -166,46 +168,46 @@ private:
     void checkRandomEvent() {
         auto now = steady_clock::now();
 
-        // Èç¹ûÒÑ¾­¹ıÈ¥ 20 Ãë£¬´¥·¢ĞÂÊÂ¼ş
+        // å¦‚æœå·²ç»è¿‡å» 20 ç§’ï¼Œè§¦å‘æ–°äº‹ä»¶
         if (duration_cast<seconds>(now - lastEventTime).count() >= 20) {
             lastEventTime = now;
             isEventActive = true;
-            eventEndTime = now + seconds(5);  // ³ÖĞø 5 Ãë
-            int randomChoice = rand() % 4;  // Ëæ»úÑ¡Ôñ 4 ÖÖÊÂ¼ş
+            eventEndTime = now + seconds(5);  // æŒç»­ 5 ç§’
+            int randomChoice = rand() % 4;  // éšæœºé€‰æ‹© 4 ç§äº‹ä»¶
 
             switch (randomChoice) {
-            case 0:  // Ê³ÎïÖØÖÃ
+            case 0:  // é£Ÿç‰©é‡ç½®
                 randomEvent = FOOD_RESET;
                 items.clear();
                 generateItems();
                 break;
-            case 1:  // ½±ÀøµôÂä
+            case 1:  // å¥–åŠ±æ‰è½
                 randomEvent = SUPER_FOOD;
                 generateSuperFood();
                 break;
-            case 2:  // µØÓüÄ£Ê½
+            case 2:  // åœ°ç‹±æ¨¡å¼
                 randomEvent = HELL_MODE;
-                delay /= 2;  // ËÙ¶È¼Ó¿ì 100%
-                generateRandomObstacles(50); // Éú³É 50 ¸öËæ»úÕÏ°­Îï
+                delay /= 2;  // é€Ÿåº¦åŠ å¿« 100%
+                generateRandomObstacles(50); // ç”Ÿæˆ 50 ä¸ªéšæœºéšœç¢ç‰©
                 break;
-            case 3:  // Ë¢·ÖÊ±¿Ì
+            case 3:  // åˆ·åˆ†æ—¶åˆ»
                 randomEvent = SCORE_RUSH;
-                generateRandomFood(20); // Éú³É 20 ¸öÊ³Îï
+                generateRandomFood(20); // ç”Ÿæˆ 20 ä¸ªé£Ÿç‰©
                 break;
             }
         }
 
-        // Èç¹ûÊÂ¼şÒÑ½øĞĞ 5 Ãë£¬Ôò½áÊø
+        // å¦‚æœäº‹ä»¶å·²è¿›è¡Œ 5 ç§’ï¼Œåˆ™ç»“æŸ
         if (isEventActive && now >= eventEndTime) {
             isEventActive = false;
             switch (randomEvent) {
             case HELL_MODE:
-                delay *= 2;  // »Ö¸´Õı³£ËÙ¶È
-                obstacles.clear();  // Çå³ıÁÙÊ±ÕÏ°­
+                delay *= 2;  // æ¢å¤æ­£å¸¸é€Ÿåº¦
+                obstacles.clear();  // æ¸…é™¤ä¸´æ—¶éšœç¢
                 break;
             case SCORE_RUSH:
-                items.clear();  // ÒÆ³ıÎ´³ÔµôµÄÊ³Îï
-                generateItems(); // »Ö¸´Õı³£µÄÊ³ÎïÊıÁ¿
+                items.clear();  // ç§»é™¤æœªåƒæ‰çš„é£Ÿç‰©
+                generateItems(); // æ¢å¤æ­£å¸¸çš„é£Ÿç‰©æ•°é‡
                 break;
             default:
                 break;
@@ -220,7 +222,7 @@ private:
             superFood.x = rand() % WIDTH;
             superFood.y = rand() % HEIGHT;
         } while (isSnake(superFood.x, superFood.y) || isObstacle(superFood.x, superFood.y));
-        superFood.type = DOUBLE_POINTS;  // ÈÃËü±íÏÖµÃÏñË«±¶µÃ·ÖµÀ¾ß
+        superFood.type = DOUBLE_POINTS;  // è®©å®ƒè¡¨ç°å¾—åƒåŒå€å¾—åˆ†é“å…·
         items.push_back(superFood);
     }
 
@@ -260,7 +262,7 @@ private:
                 return item.type;
             }
         }
-        return NORMAL; // Ä¬ÈÏ·µ»ØÆÕÍ¨µÀ¾ß
+        return NORMAL; // é»˜è®¤è¿”å›æ™®é€šé“å…·
     }
 
     void draw() {
@@ -272,9 +274,9 @@ private:
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
                 if (x == 0) buffer << "#";
-                // Í³Ò»Ê¹ÓÃisSnakeÅĞ¶Ï²¢»æÖÆ
+                // ç»Ÿä¸€ä½¿ç”¨isSnakeåˆ¤æ–­å¹¶ç»˜åˆ¶
                 if (isSnake(x, y)) {
-                    buffer << (isPlayer1Snake(x, y) ? "O" : "X");  // Íæ¼Ò1ÉßÓÃ"O"ÏÔÊ¾£¬Íæ¼Ò2ÓÃ"X"
+                    buffer << (isPlayer1Snake(x, y) ? "O" : "X");  // ç©å®¶1è›‡ç”¨"O"æ˜¾ç¤ºï¼Œç©å®¶2ç”¨"X"
                 }
                 else if (isItem(x, y)) {
                     char itemChar = getItemChar(x, y);
@@ -297,19 +299,19 @@ private:
         buffer << "Level: " << level << "  Time: " << getElapsedTime() << " seconds" << endl;
         buffer << "High Score: " << highScore << endl;
 
-        // ÏÔÊ¾µ±Ç°Éú´æÊ±¼äºÍÀúÊ·×î³¤Éú´æÊ±¼ä
+        // æ˜¾ç¤ºå½“å‰ç”Ÿå­˜æ—¶é—´å’Œå†å²æœ€é•¿ç”Ÿå­˜æ—¶é—´
         if (gameMode == SURVIVAL) {
             buffer << "Current Survival Time: " << getElapsedTime() << " seconds" << endl;
             buffer << "High Survival Time: " << highSurvivalTime << " seconds" << endl;
         }
 
-        //ÏÔÊ¾Á¬»÷ÊıÁ¿
+        //æ˜¾ç¤ºè¿å‡»æ•°é‡
         buffer << "Player 1 Combo: " << combo1 << endl;
         if (isMultiplayer) {
             buffer << "Player 2 Combo: " << combo2 << endl;
         }
 
-        // ÔÚdraw()·½·¨ÖĞÌí¼ÓÌìÆøÏÔÊ¾
+        // åœ¨draw()æ–¹æ³•ä¸­æ·»åŠ å¤©æ°”æ˜¾ç¤º
         buffer << "Current Weather: ";
         switch (currentWeather) {
         case SUNNY: buffer << "SUNNY"; break;
@@ -321,18 +323,18 @@ private:
         }
         buffer << " (" << (weatherDuration - duration_cast<seconds>(steady_clock::now() - lastWeatherChange).count()) << "s remaining)\n";
 
-        //ÏÔÊ¾Ëæ»úÊÂ¼ş
+        //æ˜¾ç¤ºéšæœºäº‹ä»¶
         buffer << "Current Event: ";
         switch (randomEvent) {
-        case FOOD_RESET: buffer << " Ê³ÎïÖØÖÃ"; break;
-        case SUPER_FOOD: buffer << " ½±ÀøµôÂä"; break;
-        case HELL_MODE: buffer << " µØÓüÄ£Ê½"; break;
-        case SCORE_RUSH: buffer << " Ë¢·ÖÊ±¿Ì"; break;
-        default: buffer << "ÎŞ"; break;
+        case FOOD_RESET: buffer << " é£Ÿç‰©é‡ç½®"; break;
+        case SUPER_FOOD: buffer << " å¥–åŠ±æ‰è½"; break;
+        case HELL_MODE: buffer << " åœ°ç‹±æ¨¡å¼"; break;
+        case SCORE_RUSH: buffer << " åˆ·åˆ†æ—¶åˆ»"; break;
+        default: buffer << "æ— "; break;
         }
         buffer << endl;
 
-        // ÏÔÊ¾Ë«±¶·ÖÊıµÀ¾ßÊ£ÓàÊ±¼ä
+        // æ˜¾ç¤ºåŒå€åˆ†æ•°é“å…·å‰©ä½™æ—¶é—´
         if (doublePointsActive1) {
             buffer << "Player 1 Double Points Remaining: " << doublePointsDuration1 << "s" << endl;
         }
@@ -340,7 +342,7 @@ private:
             buffer << "Player 2 Double Points Remaining: " << doublePointsDuration2 << "s" << endl;
         }
 
-        // ÏÔÊ¾·´×ªµÀ¾ßÊ£ÓàÊ±¼ä
+        // æ˜¾ç¤ºåè½¬é“å…·å‰©ä½™æ—¶é—´
         if (reverseActive1) {
             buffer << "Player 1 Reverse: " << (reverseDuration1 > 0 ? reverseDuration1 : 0) << "s\n";
         }
@@ -348,7 +350,7 @@ private:
             buffer << "Player 2 Reverse: " << (reverseDuration2 > 0 ? reverseDuration2 : 0) << "s\n";
         }
 
-        // ÏÔÊ¾Íæ¼Ò1ºÍÍæ¼Ò2»¤¶ÜÊ£ÓàÊ±¼ä
+        // æ˜¾ç¤ºç©å®¶1å’Œç©å®¶2æŠ¤ç›¾å‰©ä½™æ—¶é—´
         if (shieldActive1) {
             buffer << "Player 1 Shield: "
                 << (shieldDuration1 > 0 ? shieldDuration1 : 0)
@@ -360,7 +362,7 @@ private:
                 << "s\n";
         }
 
-        // ÏÔÊ¾´ÅÌúÊ£ÓàÊ±¼ä
+        // æ˜¾ç¤ºç£é“å‰©ä½™æ—¶é—´
         if (magnetActive1) {
             buffer << "Player 1 Magnet: " << magnetDuration1 << "s\n";
         }
@@ -374,9 +376,9 @@ private:
     void input() {
         if (_kbhit()) {
             int ch = _getch();
-            // ´¦ÀíÍæ¼Ò1ÊäÈë£¨¿¼ÂÇ·´×ª£©
+            // å¤„ç†ç©å®¶1è¾“å…¥ï¼ˆè€ƒè™‘åè½¬ï¼‰
             if (ch == 'w' || ch == 's' || ch == 'a' || ch == 'd') {
-                if (reverseActive1) {  // ·´×ª×´Ì¬Ê±°´¼üÓ³Éä·´×ª
+                if (reverseActive1) {  // åè½¬çŠ¶æ€æ—¶æŒ‰é”®æ˜ å°„åè½¬
                     switch (ch) {
                     case 'w': ch = 's'; break;
                     case 's': ch = 'w'; break;
@@ -391,15 +393,15 @@ private:
                 case 'd': if (direction != LEFT) direction = RIGHT; break;
                 }
             }
-            // ´¦ÀíÍæ¼Ò2ÊäÈë£¨½öÏŞË«ÈËÄ£Ê½£©
+            // å¤„ç†ç©å®¶2è¾“å…¥ï¼ˆä»…é™åŒäººæ¨¡å¼ï¼‰
             else if (ch == 224 && isMultiplayer) {
                 int arrow = _getch();
-                if (reverseActive2) {  // ·´×ªÍæ¼Ò2µÄ¼ıÍ··½Ïò
+                if (reverseActive2) {  // åè½¬ç©å®¶2çš„ç®­å¤´æ–¹å‘
                     switch (arrow) {
-                    case 72: arrow = 80; break;  // ÉÏ±äÏÂ
-                    case 80: arrow = 72; break;  // ÏÂ±äÉÏ
-                    case 75: arrow = 77; break;  // ×ó±äÓÒ
-                    case 77: arrow = 75; break;  // ÓÒ±ä×ó
+                    case 72: arrow = 80; break;  // ä¸Šå˜ä¸‹
+                    case 80: arrow = 72; break;  // ä¸‹å˜ä¸Š
+                    case 75: arrow = 77; break;  // å·¦å˜å³
+                    case 77: arrow = 75; break;  // å³å˜å·¦
                     }
                 }
                 switch (arrow) {
@@ -409,12 +411,12 @@ private:
                 case 77: if (direction2 != LEFT) direction2 = RIGHT; break;
                 }
             }
-            // ´¦ÀíÔİÍ£¼ü
+            // å¤„ç†æš‚åœé”®
             else if (ch == 'p') paused = !paused;
         }
     }
 
-    // ĞÂÔöÉú³ÉÁÙÊ±ÕÏ°­ÎïµÄ·½·¨
+    // æ–°å¢ç”Ÿæˆä¸´æ—¶éšœç¢ç‰©çš„æ–¹æ³•
     void generateTempObstacles() {
         Point obstacle;
         do {
@@ -427,8 +429,8 @@ private:
 
     void logic() {
         checkRandomEvent();
-        //Ëæ»úÊÂ¼şÂß¼­
-        // ÌìÆøÏµÍ³Âß¼­
+        //éšæœºäº‹ä»¶é€»è¾‘
+        // å¤©æ°”ç³»ç»Ÿé€»è¾‘
         auto now = steady_clock::now();
         int weatherElapsed = duration_cast<seconds>(now - lastWeatherChange).count();
         int weatherRemaining = weatherDuration - weatherElapsed;
@@ -437,13 +439,13 @@ private:
             currentWeather = static_cast<Weather>(rand() % 4);
             lastWeatherChange = now;
             weatherDuration = 20;
-            tempObstacles.clear(); // Çå³ı¾ÉÕÏ°­Îï
+            tempObstacles.clear(); // æ¸…é™¤æ—§éšœç¢ç‰©
 
-            // ÖØÖÃËÙ¶Èµ½»ù´¡Öµ
+            // é‡ç½®é€Ÿåº¦åˆ°åŸºç¡€å€¼
             delay = baseDelay;
         }
 
-        // ´¦ÀíÌìÆøĞ§¹û
+        // å¤„ç†å¤©æ°”æ•ˆæœ
         auto it = tempObstacles.begin();
         switch (currentWeather) {
         case SUNNY:
@@ -456,11 +458,11 @@ private:
             delay = baseDelay * 1.3;
             break;
         case THUNDERSTORM:
-            // Ã¿3ÃëÉú³ÉĞÂÕÏ°­Îï
+            // æ¯3ç§’ç”Ÿæˆæ–°éšœç¢ç‰©
             if (duration_cast<seconds>(now - lastWeatherChange).count() % 3 == 0) {
                 generateTempObstacles();
             }
-            // ÒÆ³ı¹ıÆÚÕÏ°­Îï
+            // ç§»é™¤è¿‡æœŸéšœç¢ç‰©
             while (it != tempObstacles.end()) {
                 if (duration_cast<seconds>(now - it->second).count() >= 3) {
                     it = tempObstacles.erase(it);
@@ -471,7 +473,7 @@ private:
             }
             break;
         case WINDY:
-            // ´ó·çÌìÆø·´Ïò¿ØÖÆ
+            // å¤§é£å¤©æ°”åå‘æ§åˆ¶
             if (duration_cast<seconds>(now - lastWeatherChange).count() <= 20) {
                 reverseActive1 = true;
                 reverseActive2 = isMultiplayer;
@@ -482,7 +484,7 @@ private:
             }
             break;
         case SMOG:
-            // Îíö²ÌìÆø¼õÉÙµÃ·Ö
+            // é›¾éœ¾å¤©æ°”å‡å°‘å¾—åˆ†
             if (duration_cast<seconds>(now - lastWeatherChange).count() <= 20) {
                 doublePointsActive1 = false;
                 doublePointsActive2 = false;
@@ -490,7 +492,7 @@ private:
             break;
         }
 
-        // Éú´æÄ£Ê½Âß¼­£ºÃ¿ÃëÉú³É8¸öĞÂµÄÕÏ°­Îï
+        // ç”Ÿå­˜æ¨¡å¼é€»è¾‘ï¼šæ¯ç§’ç”Ÿæˆ8ä¸ªæ–°çš„éšœç¢ç‰©
         if (gameMode == SURVIVAL) {
             if (duration_cast<seconds>(now - lastObstacleTime).count() >= 1) {
                 for (int i = 0; i < 8; ++i) {
@@ -500,7 +502,7 @@ private:
             }
         }
 
-        // Íæ¼Ò1ÒÆ¶¯Âß¼­
+        // ç©å®¶1ç§»åŠ¨é€»è¾‘
         Point newHead = snake.front();
         switch (direction) {
         case UP: newHead.y--; break;
@@ -511,7 +513,7 @@ private:
 
         bool ateItem = isItem(newHead.x, newHead.y);
 
-        // Åö×²¼ì²â
+        // ç¢°æ’æ£€æµ‹
         if (!shieldActive1 && (newHead.x < 0 || newHead.x >= WIDTH ||
             newHead.y < 0 || newHead.y >= HEIGHT ||
             isSnake(newHead.x, newHead.y) ||
@@ -552,7 +554,7 @@ private:
             case DOUBLE_POINTS:
                 doublePointsActive1 = true;
                 doublePointsStart1 = steady_clock::now();
-                doublePointsDuration1 = 5; // 5Ãë
+                doublePointsDuration1 = 5; // 5ç§’
                 break;
             case REVERSE:
                 reverseActive1 = true;
@@ -573,7 +575,7 @@ private:
             snake.pop_back();
         }
 
-        // ´ÅÌúÉúĞ§Ê±×Ô¶¯ÎüÊÕÊ³Îï
+        // ç£é“ç”Ÿæ•ˆæ—¶è‡ªåŠ¨å¸æ”¶é£Ÿç‰©
         if (magnetActive1 && player1Alive) {
             auto now = steady_clock::now();
             magnetDuration1 = 5 - duration_cast<seconds>(now - magnetStart1).count();
@@ -581,7 +583,7 @@ private:
                 magnetActive1 = false;
             }
             else {
-                // ¼ì²é5x5·¶Î§
+                // æ£€æŸ¥5x5èŒƒå›´
                 Point head = snake.front();
                 for (int dx = -2; dx <= 2; ++dx) {
                     for (int dy = -2; dy <= 2; ++dy) {
@@ -595,7 +597,7 @@ private:
                                 score1 += 10 * (doublePointsActive1 ? 2 : 1);
                                 if (score1 % 50 == 0) levelUp();
 
-                                //´¦ÀíÌØÊâµÀ¾ßĞ§¹û
+                                //å¤„ç†ç‰¹æ®Šé“å…·æ•ˆæœ
                                 switch (type) {
                                 case SHIELD:
                                     shieldActive1 = true;
@@ -611,7 +613,7 @@ private:
                                 case DOUBLE_POINTS:
                                     doublePointsActive1 = true;
                                     doublePointsStart1 = steady_clock::now();
-                                    doublePointsDuration1 = 5; // 5Ãë
+                                    doublePointsDuration1 = 5; // 5ç§’
                                     break;
                                 case REVERSE:
                                     reverseActive1 = true;
@@ -632,14 +634,14 @@ private:
             }
         }
 
-        // ¸üĞÂ·´×ªµ¹¼ÆÊ±
+        // æ›´æ–°åè½¬å€’è®¡æ—¶
         if (reverseActive1) {
             auto now = steady_clock::now();
             reverseDuration1 = 5 - duration_cast<seconds>(now - reverseStart1).count();
             if (reverseDuration1 <= 0) reverseActive1 = false;
         }
 
-        // ¸üĞÂ»¤¶ÜÊ±¼ä£¨Èç¹û¼¤»î£©
+        // æ›´æ–°æŠ¤ç›¾æ—¶é—´ï¼ˆå¦‚æœæ¿€æ´»ï¼‰
         if (shieldActive1) {
             auto now = steady_clock::now();
             shieldDuration1 = 3 - duration_cast<seconds>(now - shieldStart1).count();
@@ -648,7 +650,7 @@ private:
             }
         }
 
-        // ¸üĞÂË«±¶µÃ·Ö×´Ì¬£¨·Ç×èÈûÊ½£©
+        // æ›´æ–°åŒå€å¾—åˆ†çŠ¶æ€ï¼ˆéé˜»å¡å¼ï¼‰
         if (doublePointsActive1) {
             auto now = steady_clock::now();
             doublePointsDuration1 = 5 - duration_cast<seconds>(now - doublePointsStart1).count();
@@ -657,7 +659,7 @@ private:
             }
         }
 
-        // Íæ¼Ò2Âß¼­£º½öÔÚË«ÈËÄ£Ê½ÏÂ²ÅÖ´ĞĞ
+        // ç©å®¶2é€»è¾‘ï¼šä»…åœ¨åŒäººæ¨¡å¼ä¸‹æ‰æ‰§è¡Œ
         if (isMultiplayer && player2Alive) {
             Point newHead2 = player2.front();
             switch (direction2) {
@@ -708,7 +710,7 @@ private:
                 case DOUBLE_POINTS:
                     doublePointsActive2 = true;
                     doublePointsStart2 = steady_clock::now();
-                    doublePointsDuration2 = 5; // 5Ãë
+                    doublePointsDuration2 = 5; // 5ç§’
                     break;
                 case REVERSE:
                     reverseActive2 = true;
@@ -730,7 +732,7 @@ private:
             }
         }
 
-        // Íæ¼Ò2´ÅÌúÉúĞ§
+        // ç©å®¶2ç£é“ç”Ÿæ•ˆ
         if (magnetActive2 && player2Alive) {
             auto now = steady_clock::now();
             magnetDuration2 = 5 - duration_cast<seconds>(now - magnetStart2).count();
@@ -750,7 +752,7 @@ private:
                                 generateItem();
                                 score2 += 10 * (doublePointsActive2 ? 2 : 1);
 
-                                //´¦ÀíÌØÊâµÀ¾ßĞ§¹û
+                                //å¤„ç†ç‰¹æ®Šé“å…·æ•ˆæœ
                                 switch (type) {
                                 case SHIELD:
                                     shieldActive1 = true;
@@ -766,7 +768,7 @@ private:
                                 case DOUBLE_POINTS:
                                     doublePointsActive1 = true;
                                     doublePointsStart1 = steady_clock::now();
-                                    doublePointsDuration1 = 5; // 5Ãë
+                                    doublePointsDuration1 = 5; // 5ç§’
                                     break;
                                 case REVERSE:
                                     reverseActive1 = true;
@@ -787,10 +789,10 @@ private:
             }
         }
 
-        // ¸üĞÂ×´Ì¬
+        // æ›´æ–°çŠ¶æ€
         now = steady_clock::now();
 
-        //¸üĞÂ»¤¶Üµ¹¼ÆÊ±
+        //æ›´æ–°æŠ¤ç›¾å€’è®¡æ—¶
         if (shieldActive1) {
             shieldDuration1 = 3 - duration_cast<seconds>(now - shieldStart1).count();
             if (shieldDuration1 <= 0) shieldActive1 = false;
@@ -800,7 +802,7 @@ private:
             if (shieldDuration2 <= 0) shieldActive2 = false;
         }
 
-        // ¸üĞÂ·´×ªµ¹¼ÆÊ±
+        // æ›´æ–°åè½¬å€’è®¡æ—¶
         if (reverseActive1) {
             reverseDuration1 = 5 - duration_cast<seconds>(now - reverseStart1).count();
             if (reverseDuration1 <= 0) reverseActive1 = false;
@@ -810,7 +812,7 @@ private:
             if (reverseDuration2 <= 0) reverseActive2 = false;
         }
 
-        //¸üĞÂË«±¶µÃ·Öµ¹¼ÆÊ±
+        //æ›´æ–°åŒå€å¾—åˆ†å€’è®¡æ—¶
         if (doublePointsActive1) {
             doublePointsDuration1 = 5 - duration_cast<seconds>(now - doublePointsStart1).count();
             if (doublePointsDuration1 <= 0) {
@@ -824,7 +826,7 @@ private:
             }
         }
 
-        // ¾ºÕùÂß¼­
+        // ç«äº‰é€»è¾‘
         if (player1Alive && player2Alive && isMultiplayer) {
             if (snake.size() > player2.size() &&
                 isSnake(player2.front().x, player2.front().y)) {
@@ -836,7 +838,7 @@ private:
             }
         }
 
-        // ½áÊøÌõ¼ş
+        // ç»“æŸæ¡ä»¶
         if ((!isMultiplayer && !player1Alive) ||
             (isMultiplayer && !player1Alive && !player2Alive)) {
             gameOver = true;
@@ -845,16 +847,16 @@ private:
 
     void levelUp() {
         level++;
-        if (delay > 50) delay -= 20; // Ã¿ÉıÒ»¼¶¼õÉÙÑÓ³ÙÊ±¼ä£¬¼Ó¿ìËÙ¶È
-        generateItems(); // Ã¿ÉıÒ»¼¶Éú³É¸ü¶àµÄÎïÆ·
-        generateObstacles(); // Ã¿ÉıÒ»¼¶Éú³É¸ü¶àµÄÕÏ°­Îï
+        if (delay > 50) delay -= 20; // æ¯å‡ä¸€çº§å‡å°‘å»¶è¿Ÿæ—¶é—´ï¼ŒåŠ å¿«é€Ÿåº¦
+        generateItems(); // æ¯å‡ä¸€çº§ç”Ÿæˆæ›´å¤šçš„ç‰©å“
+        generateObstacles(); // æ¯å‡ä¸€çº§ç”Ÿæˆæ›´å¤šçš„éšœç¢ç‰©
     }
 
     bool isSnake(int x, int y) {
         for (const auto& p : snake) {
             if (p.x == x && p.y == y) return true;
         }
-        if (isMultiplayer) {  // ½öÔÚË«ÈËÄ£Ê½¼ì²éÍæ¼Ò2
+        if (isMultiplayer) {  // ä»…åœ¨åŒäººæ¨¡å¼æ£€æŸ¥ç©å®¶2
             for (const auto& p : player2) {
                 if (p.x == x && p.y == y) return true;
             }
@@ -887,7 +889,7 @@ private:
 
     void generateItem() {
         Point item;
-        item.type = static_cast<ItemType>(rand() % 7); // Ëæ»úÉú³É7ÖÖµÀ¾ß
+        item.type = static_cast<ItemType>(rand() % 7); // éšæœºç”Ÿæˆ7ç§é“å…·
         do {
             item.x = rand() % WIDTH;
             item.y = rand() % HEIGHT;
@@ -971,17 +973,17 @@ private:
         for (const auto& item : items) {
             if (item.x == x && item.y == y) {
                 switch (item.type) {
-                case REVERSE: return '$';  //·´×ªµÀ¾ß
-                case BOOST: return '+';   // ¼ÓËÙµÀ¾ß
-                case SLOWDOWN: return '-'; // ¼õËÙµÀ¾ß
-                case SHIELD: return '&';   // »¤¶ÜµÀ¾ß£¬¸ÄÎª&±ÜÃâÓëÇ½±ÚÖØµş
-                case DOUBLE_POINTS: return '@'; // Ë«±¶·ÖÊıµÀ¾ß
-                case MAGNET: return '^';  // ´ÅÌúµÀ¾ßÏÔÊ¾
-                default: return '*';     // ÆÕÍ¨Ê³Îï
+                case REVERSE: return '$';  //åè½¬é“å…·
+                case BOOST: return '+';   // åŠ é€Ÿé“å…·
+                case SLOWDOWN: return '-'; // å‡é€Ÿé“å…·
+                case SHIELD: return '&';   // æŠ¤ç›¾é“å…·ï¼Œæ”¹ä¸º&é¿å…ä¸å¢™å£é‡å 
+                case DOUBLE_POINTS: return '@'; // åŒå€åˆ†æ•°é“å…·
+                case MAGNET: return '^';  // ç£é“é“å…·æ˜¾ç¤º
+                default: return '*';     // æ™®é€šé£Ÿç‰©
                 }
             }
         }
-        return ' '; // Ä¬ÈÏ¿Õ°××Ö·û
+        return ' '; // é»˜è®¤ç©ºç™½å­—ç¬¦
     }
 };
 
@@ -990,17 +992,17 @@ int main() {
     bool isMultiplayer;
     GameMode gameMode;
 
-    // Ñ¡ÔñÄÑ¶È
+    // é€‰æ‹©éš¾åº¦
     cout << "Select difficulty level (1: Easy, 2: Medium, 3: Hard): ";
     cin >> difficulty;
 
-    // Ñ¡ÔñÓÎÏ·Ä£Ê½
+    // é€‰æ‹©æ¸¸æˆæ¨¡å¼
     cout << "Select mode (1: Single Player, 2: Multiplayer, 3: Survival): ";
     int mode;
     cin >> mode;
     if (mode == 3) {
         gameMode = SURVIVAL;
-        isMultiplayer = false; // Éú´æÄ£Ê½½öÖ§³Öµ¥ÈË
+        isMultiplayer = false; // ç”Ÿå­˜æ¨¡å¼ä»…æ”¯æŒå•äºº
     }
     else {
         gameMode = CLASSIC;
@@ -1010,7 +1012,7 @@ int main() {
     int numObstacles;
     int initialDelay;
 
-    // ¸ù¾İÄÑ¶ÈÑ¡ÔñÕÏ°­ÎïÊıÁ¿ºÍ³õÊ¼ÑÓ³Ù
+    // æ ¹æ®éš¾åº¦é€‰æ‹©éšœç¢ç‰©æ•°é‡å’Œåˆå§‹å»¶è¿Ÿ
     switch (difficulty) {
     case 1:
         numObstacles = 20;
@@ -1031,7 +1033,7 @@ int main() {
         break;
     }
 
-    // ³õÊ¼»¯ÓÎÏ·²¢¿ªÊ¼ÔËĞĞ
+    // åˆå§‹åŒ–æ¸¸æˆå¹¶å¼€å§‹è¿è¡Œ
     SnakeGame game(numObstacles, initialDelay, isMultiplayer, gameMode);
     game.run();
     return 0;
